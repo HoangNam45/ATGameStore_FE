@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { onAuthStateChanged, User } from "firebase/auth";
 import { auth } from "@/lib/firebaseClient";
@@ -15,7 +15,7 @@ import { Separator } from "@/components/ui/separator";
 import { ArrowLeft, CreditCard, Mail, CheckCircle } from "lucide-react";
 import Link from "next/link";
 
-export default function CheckoutPage() {
+function CheckoutContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const productId = searchParams.get("productId");
@@ -543,5 +543,25 @@ export default function CheckoutPage() {
 
       <Footer />
     </div>
+  );
+}
+
+export default function CheckoutPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-background">
+          <Header />
+          <main className="container mx-auto px-4 py-8 mt-20">
+            <div className="text-center">
+              <h1 className="text-2xl font-bold mb-4">Đang tải...</h1>
+            </div>
+          </main>
+          <Footer />
+        </div>
+      }
+    >
+      <CheckoutContent />
+    </Suspense>
   );
 }
